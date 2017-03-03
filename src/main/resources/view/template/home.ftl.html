@@ -1,0 +1,164 @@
+<#setting datetime_format="yyyy-MM-dd HH:mm:ss"/>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8"/>
+		<title>分布式任务调度管理</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width"/>
+		<meta name="keywords" content="分布式任务调度管理"/>
+		<meta name="description" content="分布式任务调度管理"/>
+		<link rel="stylesheet" href='./css/bootstrap.min.css'>
+		<script type="text/javascript" src="./js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+	</head>
+	<body>
+	 <div class="container">
+	     <div class="navbar-right">
+	     	<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#myModal" data-title="新增">新增</button>
+	     </div>
+	     <div id="myModal" class="modal fade">
+	         <div class="modal-dialog">
+	             <div class="modal-content">
+	                 <div class="modal-header">
+	                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                     <h4 class="modal-title">Modal Window</h4>
+	                 </div>
+	                 <div class="modal-body">
+	 					<div class="container">
+	 						<form id="addform" method="post" action="/lives/uncode/schedule" class="form-horizontal">
+	 						<div class="row">
+	 							<div class="col-md-6">
+	 									<div class="form-group">
+	 										<label class="col-sm-4 control-label" for="bean">bean名称<span style="color:red">*</span></label>
+	 										<div class="col-sm-6">
+	 											<input id="bean" name="bean" type="text" class="form-control" required>
+	 										</div>
+	 									</div>
+	 									<div class="form-group">
+	 										<label class="col-sm-4 control-label" for="method">方法名称<span style="color:red">*</span></label>
+	 										<div class="col-sm-6">
+	 											<input id="method" name="method" type="text" class="form-control" required>
+	 										</div>
+	 									</div>
+	 									<div class="form-group">
+	 										<label class="col-sm-4 control-label" for="cronExpression">corn表达式</label>
+	 										<div class="col-sm-6">
+	 											<input id="cronExpression" name="cronExpression" type="text" class="form-control" required>
+	 										</div>
+	 									</div>
+	 									<div class="form-group">
+	 										<label class="col-sm-4 control-label" for="period">周期（秒）</label>
+	 										<div class="col-sm-6">
+	 											<input id="period" name="period" type="text" class="form-control" required>
+	 										</div>
+	 									</div>
+	 									<div class="form-group">
+	 										<label class="col-sm-4 control-label" for="startTime">开始时间</label>
+	 										<div class="col-sm-6">
+	 											<input id="startTime" name="startTime" type="text" class="form-control" required>
+	 										</div>
+	 									</div>
+	 									<div class="form-group">
+	 										<label class="col-sm-4 control-label" for="param">参数(字符串)</label>
+	 										<div class="col-sm-6">
+	 											<input id="param" name="param" type="text" class="form-control" required>
+	 										</div>
+	 									</div>
+	              		   				<div class="modal-footer">
+	               		      				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	               		      				<button type="button" onclick="formSubmit()" class="btn btn-primary">保存</button>
+	             	    				</div>
+	                 				</div>
+	                 			</div>
+	 							</form>
+	         				</div>
+	         			</div>
+	         		</div>
+	     	</div>
+	 	</div>
+	 </div>
+	 <h1>分布式任务调度管理操作台</h1>
+	 <div class="container-fluid">
+	 	<div class="row-fluid">
+	 		<div class="span12">
+	 			<h3>集群节点</h3>
+	 			<table class="table">
+	 				<thead>
+	 					<tr>
+	 						<th width="100px">序号</th>
+	 						<th>名称</th>
+	 						<th>调度节点</th>
+	 					</tr>
+	 				</thead>
+	 				<tbody>
+	 					<#list serverList as server>
+	 						<tr class="info">
+	 							<td>${server_index+1}</td>
+	 							<td>${server.serverName}</td>
+	 							<td>${server.leader}</td>
+ 							</tr> 
+			            </#list>
+	 				</tbody>
+	 			</table>
+	 		</div>
+	 		<div class="span12">
+	 			<h3>定时任务列表</h3>
+	 			<table class="table">
+	 				<thead>
+	 					<tr>
+	 						<th>序号</th>
+	 						<th>目标bean</th>
+	 						<th>目标方法</th>
+	 						<th>类型</th>
+	 						<th>cron表达式</th>
+	 						<th>周期（秒）</th>
+	 						<th>执行节点</th>
+	 						<th>执行次数</th>
+	 						<th>最近执行时间</th>
+	 						<th>操作</th>
+	 					</tr>
+	 				</thead>
+	 				<tbody>
+	 					<#list taskList as task>
+							<tr class="info">
+	 							<td>${task_index+1}</td>
+	 							<td>${task.targetBean}</td>
+	 							<td>${task.targetMethod}</td>
+	 							<td>${task.type}</td>
+	 							<td>${task.cronExpression}</td>
+	 							<td>${task.period}</td>
+	 							<td>${task.currentServer}</td>
+	 							<td>${task.runTimes}</td>
+<!-- 	 							task.lastRunningTime -->
+	 							
+	 							<#if task.lastRunningTime=0>
+	 								<td>未执行</td>
+	 							<#else>
+	 								<td>${task.lastRunningTime?number_to_datetime}</td>
+	 							</#if>
+	 							<td>删除</td>
+ 							</tr> 			            
+						</#list>
+ 	 				</tbody>
+	 			</table>
+	 		</div>
+	 	</div>
+	 </div>
+	 
+		 <script type="text/javascript">
+				$(document).ready(function(){
+					$("#myModal").on('show.bs.modal', function(event){
+				    var button = $(event.relatedTarget); 
+					var titleData = button.data('title'); 
+				    var modal = $(this)
+			       	modal.find('.modal-title').text(titleData + '定时任务');
+			  		});
+				});
+				function formSubmit(){
+					//document.getElementById("addform").submit();
+				}
+		</script>
+	</body>
+</html>
