@@ -28,6 +28,10 @@ schedule
 				--lastRuningTime（上次运行时间）
 				--nextRuningTime（下次运行时间）
 				--times（执行总次数）
+			
+效果展示
+=========================================
+![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/admin.png)
 
 任务持久化脚本
 ====================
