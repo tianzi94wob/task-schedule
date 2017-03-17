@@ -7,9 +7,12 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.Op;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
+
+import cn.com.citycloud.frame.task.core.ZkInfo;
 
 /**
  * zk工具类
@@ -71,4 +74,21 @@ public class ZKTools {
 	   }
 	   return dealList.toArray(new String[0]);
    }
+   
+   public static void multiSetData(ZooKeeper zk,List<ZkInfo> zkInfoList) throws Exception {
+       List<Op> ops = new ArrayList<Op>();
+       for(ZkInfo zkInfo:zkInfoList){
+           ops.add(Op.setData(zkInfo.getPath(), zkInfo.getData()==null?null:zkInfo.getData().getBytes(), zkInfo.getVersion()));
+       }
+       zk.multi(ops);
+   }
+   
+   public static void multiCreate(ZooKeeper zk,List<ZkInfo> zkInfoList) throws Exception {
+       List<Op> ops = new ArrayList<Op>();
+       for(ZkInfo zkInfo:zkInfoList){
+           ops.add(Op.create(zkInfo.getPath(), zkInfo.getData()==null?null:zkInfo.getData().getBytes(), zkInfo.getAcls(), zkInfo.getCreateMode()));
+       }
+       zk.multi(ops);
+   }
+   
 }

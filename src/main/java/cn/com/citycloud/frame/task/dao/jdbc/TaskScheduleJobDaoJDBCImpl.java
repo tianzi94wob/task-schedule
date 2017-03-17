@@ -12,7 +12,10 @@ import cn.com.citycloud.frame.task.entity.TaskScheduleJob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Repository
 public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
@@ -33,6 +36,8 @@ public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
         sqlBuffer.append(" select * from ");
         sqlBuffer.append(TABLE_NAME);
         
+        sqlBuffer.append(" where job_status!=2 ");
+        
         List<Object> paramList=new ArrayList<Object>();
         if(!(StringUtils.isEmpty(jobCond.getBeanClass())&&
                 StringUtils.isEmpty(jobCond.getJobGroup())&&
@@ -40,8 +45,6 @@ public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
                 StringUtils.isEmpty(jobCond.getJobStatus())&&
                 StringUtils.isEmpty(jobCond.getPrjName())&&
                 StringUtils.isEmpty(jobCond.getSpringId()))){
-            
-            sqlBuffer.append(" where 1=1 ");
             
             if(!StringUtils.isEmpty(jobCond.getBeanClass())){
                 paramList.add(jobCond.getBeanClass());
@@ -81,8 +84,8 @@ public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
         StringBuffer sqlBuffer=new StringBuffer();
         sqlBuffer.append(" insert into ");
         sqlBuffer.append(TABLE_NAME);
-        sqlBuffer.append("(job_name, job_status, job_group, cron_expression, bean_class, spring_id, method_name, is_concurrent, description, create_time, update_time, prj_name)");
-        sqlBuffer.append(" values (?,?,?,?,?,?,?,?,?,?,?,?) ");
+        sqlBuffer.append("(job_name, job_status, job_group, cron_expression, bean_class, spring_id, method_name, is_concurrent, description, create_time , prj_name)");
+        sqlBuffer.append(" values (?,?,?,?,?,?,?,?,?,?,?) ");
 
         return jdbcTemplate.update(sqlBuffer.toString(), new PreparedStatementSetter() {
             @Override
@@ -100,8 +103,7 @@ public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
                 ps.setString(9, job.getDescription());
                 
                 ps.setTimestamp(10, new java.sql.Timestamp(job.getCreateTime().getTime()));
-                ps.setTimestamp(11, new java.sql.Timestamp(job.getUpdateTime().getTime()));
-                ps.setString(12, job.getPrjName());
+                ps.setString(11, job.getPrjName());
             }
         });
     }
@@ -125,34 +127,47 @@ public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
         sqlBuffer.append(" update ");
         sqlBuffer.append(TABLE_NAME);
         sqlBuffer.append(" set id = ?");
+        
+        final Map<String, Object> map=new LinkedHashMap<String, Object>();
+        
         if(!StringUtils.isEmpty(job.getBeanClass())){
+            map.put("bean_class", job.getBeanClass());
             sqlBuffer.append(" , bean_class = ? ");
         }
         if(!StringUtils.isEmpty(job.getJobGroup())){
+            map.put("job_group", job.getJobGroup());
             sqlBuffer.append(" , job_group = ? ");
         }
         if(!StringUtils.isEmpty(job.getJobName())){
+            map.put("job_name", job.getJobName());
             sqlBuffer.append(" , job_name = ? ");
         }
         if(!StringUtils.isEmpty(job.getJobStatus())){
+            map.put("job_status", job.getJobStatus());
             sqlBuffer.append(" , job_status = ? ");
         }
         if(!StringUtils.isEmpty(job.getPrjName())){
+            map.put("prj_name", job.getPrjName());
             sqlBuffer.append(" , prj_name = ? ");
         }
         if(!StringUtils.isEmpty(job.getSpringId())){
+            map.put("spring_id", job.getSpringId());
             sqlBuffer.append(" , spring_id = ? ");
         }
         if(!StringUtils.isEmpty(job.getCronExpression())){
+            map.put("cron_expression", job.getCronExpression());
             sqlBuffer.append(" , cron_expression = ? ");
         }
         if(!StringUtils.isEmpty(job.getMethodName())){
+            map.put("method_name", job.getMethodName());
             sqlBuffer.append(" , method_name = ? ");
         }
         if(!StringUtils.isEmpty(job.getDescription())){
+            map.put("description", job.getDescription());
             sqlBuffer.append(" , description = ? ");
         }
         if(job.getUpdateTime()!=null){
+            map.put("update_time", job.getUpdateTime());
             sqlBuffer.append(" , update_time = ? ");
         }
         
@@ -162,17 +177,19 @@ public class TaskScheduleJobDaoJDBCImpl implements TaskScheduleJobDao {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setLong(1, job.getId());
-                ps.setString(2, job.getBeanClass());
-                ps.setString(3, job.getJobGroup());
-                ps.setString(4, job.getJobName());
-                ps.setString(5, job.getJobStatus());
-                ps.setString(6, job.getPrjName());
-                ps.setString(7, job.getSpringId());
-                ps.setString(8, job.getCronExpression());
-                ps.setString(9, job.getMethodName());
-                ps.setString(10, job.getDescription());
-                ps.setTimestamp(11, new java.sql.Timestamp(job.getUpdateTime().getTime()));
-                ps.setLong(12, job.getId());
+                
+                Set<Map.Entry<String, Object>> entryseSet=map.entrySet();
+                int index=2;
+                for (Map.Entry<String, Object> entry:entryseSet) {
+                    if("update_time".equals(entry.getKey())){
+                        ps.setTimestamp(index, new java.sql.Timestamp(job.getUpdateTime().getTime()));
+                    }else {
+                        ps.setString(index, (String)entry.getValue());
+                    }
+
+                    index++;
+                }
+                ps.setLong(index, job.getId());
             }
         });
     }

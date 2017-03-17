@@ -49,6 +49,8 @@ public class TaskScheduleJob implements Serializable {
 
 	/** 更新时间 */
 	private Date updateTime;
+	
+	//TODO 后期支持参数持久化，目前只是临时任务支持
 
 	public Long getId() {
         return id;

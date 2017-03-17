@@ -16,7 +16,7 @@
 	<body>
 	 <div class="container">
 	     <div class="navbar-right">
-	     	<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#myModal" data-title="新增">新增</button>
+<!-- 	     	<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#myModal" data-title="新增">新增</button> -->
 	     </div>
 	     <div id="myModal" class="modal fade">
 	         <div class="modal-dialog">
@@ -111,13 +111,16 @@
 	 						<th>序号</th>
 	 						<th>目标bean</th>
 	 						<th>目标方法</th>
-	 						<th>类型</th>
+	 						<th>参数</th>
 	 						<th>cron表达式</th>
-	 						<th>周期（秒）</th>
+	 						<th>类型</th>
 	 						<th>执行节点</th>
 	 						<th>执行次数</th>
 	 						<th>最近执行时间</th>
-	 						<th>操作</th>
+	 						<th>最近耗时ms</th>
+	 						<th>下次执行时间</th>
+	 						<th>状态</th>
+<!-- 	 						<th>操作</th> -->
 	 					</tr>
 	 				</thead>
 	 				<tbody>
@@ -126,19 +129,36 @@
 	 							<td>${task_index+1}</td>
 	 							<td>${task.targetBean}</td>
 	 							<td>${task.targetMethod}</td>
-	 							<td>${task.type}</td>
+ 								<td>${task.params!''}</td>
 	 							<td>${task.cronExpression}</td>
-	 							<td>${task.period}</td>
+	 							<#if ((!task.params??)||task.params == "1") >
+	 								<td>持久化任务</td>
+	 							<#else>
+	 								<td>ZK临时任务</td>
+	 							</#if>
 	 							<td>${task.currentServer}</td>
 	 							<td>${task.runTimes}</td>
-<!-- 	 							task.lastRunningTime -->
-	 							
 	 							<#if task.lastRunningTime=0>
-	 								<td>未执行</td>
+	 								<td>--</td>
 	 							<#else>
 	 								<td>${task.lastRunningTime?number_to_datetime}</td>
 	 							</#if>
-	 							<td>删除</td>
+	 							<#if task.msc=0>
+	 								<td>--</td>
+	 							<#else>
+	 								<td>${task.msc}</td>
+	 							</#if>
+	 							<#if task.nextRuningTime=0>
+	 								<td>--</td>
+	 							<#else>
+	 								<td>${task.nextRuningTime?number_to_datetime}</td>
+	 							</#if>
+	 							<#if task.jobStatus=='0'>
+	 								<td>未调度</td>
+	 							<#else>
+	 								<td>调度中</td>
+	 							</#if>
+<!-- 	 							<td>删除</td> -->
  							</tr> 			            
 						</#list>
  	 				</tbody>

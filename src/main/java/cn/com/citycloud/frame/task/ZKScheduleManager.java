@@ -17,9 +17,9 @@ import org.springframework.util.CollectionUtils;
 
 import cn.com.citycloud.frame.task.core.ScheduleServer;
 import cn.com.citycloud.frame.task.core.TaskDefine;
+import cn.com.citycloud.frame.task.dao.TaskScheduleJobDao;
+import cn.com.citycloud.frame.task.dao.jdbc.TaskScheduleJobDaoJDBCImpl;
 import cn.com.citycloud.frame.task.entity.TaskScheduleJob;
-import cn.com.citycloud.frame.task.service.TaskScheduleJobService;
-import cn.com.citycloud.frame.task.service.impl.TaskScheduleJobServiceImpl;
 
 /**
  * 调度器核心管理
@@ -94,7 +94,6 @@ public class ZKScheduleManager implements ApplicationContextAware{
             if (this.zkManager != null) {
                 this.zkManager.close();
             }
-            //TODO 连接池最好改掉
             this.zkManager = new ZKManager(p);//连接zookeeper
             this.errorMessage = "Zookeeper connecting ......" + this.zkManager.getConnectStr();
 
@@ -146,18 +145,25 @@ public class ZKScheduleManager implements ApplicationContextAware{
      *
      */
     private void synchronizeDBJob() throws Exception{
-        TaskScheduleJobService taskScheduleJobService=applicationContext.getBean(TaskScheduleJobServiceImpl.class);
-        List<TaskScheduleJob> jobList = taskScheduleJobService.queryAllRunningJob(getAppName());
-        List<String> taskKeyNameList = this.scheduleDataManager.getAllTaskKey();
+        TaskScheduleJobDao taskScheduleJobDao=applicationContext.getBean(TaskScheduleJobDaoJDBCImpl.class);
+        TaskScheduleJob taskScheduleJob=new TaskScheduleJob();
+        taskScheduleJob.setPrjName(getAppName());
+        List<TaskScheduleJob> jobList = taskScheduleJobDao.queryTaskScheduleJobList(taskScheduleJob);
+        List<TaskDefine> taskList = this.scheduleDataManager.getAllTask();
         if(!CollectionUtils.isEmpty(jobList)){
-            if(!CollectionUtils.isEmpty(taskKeyNameList)){
+            if(!CollectionUtils.isEmpty(taskList)){
                 List<String> taskKeyNameRemainList=new ArrayList<String>();
-                taskKeyNameRemainList.addAll(taskKeyNameList);
+                for(TaskDefine taskDefine:taskList){
+                    if(!TaskDefine.ZK_TASK_TYPE.equals(taskDefine.getType())){
+                        taskKeyNameRemainList.add(taskDefine.stringKey());
+                    }
+                }
                 
-                for (String taskKeyName : taskKeyNameList) {
+                for (TaskDefine taskDefineOrg : taskList) {
                     for (TaskScheduleJob job : jobList) {
                         TaskDefine taskDefine=new TaskDefine(job);
-                        if(taskKeyName!=null&&taskKeyName.equals(taskDefine.stringKey())){
+                        String taskKeyName = taskDefineOrg.stringKey();
+                        if(taskKeyName!=null&&taskKeyName.equals(taskDefine.stringKey())&&!TaskDefine.ZK_TASK_TYPE.equals(taskDefineOrg.getType())){
                             taskKeyNameRemainList.remove(taskKeyName);
                         }
                     }
@@ -175,13 +181,19 @@ public class ZKScheduleManager implements ApplicationContextAware{
             for (TaskScheduleJob job : jobList) {
                 TaskDefine taskDefine=new TaskDefine(job);
                 LOGGER.info("设置任务信息:{}",taskDefine.stringKey());
-                scheduleDataManager.settingTask(taskDefine);
+                try {
+                    scheduleDataManager.settingTask(taskDefine);
+                } catch (Exception e) {
+                    LOGGER.error("",e);
+                }
             }
             
         }else{
-            for (String taskKeyName : taskKeyNameList) {
-                LOGGER.info("删除跟数据库不匹配的目录:{}",taskKeyName);
-                this.scheduleDataManager.delTask(taskKeyName);
+            for (TaskDefine taskDefine:taskList) {
+                if(!TaskDefine.ZK_TASK_TYPE.equals(taskDefine.getType())){
+                    LOGGER.info("删除跟数据库不匹配的目录:{}",taskDefine.stringKey());
+                    this.scheduleDataManager.delTask(taskDefine.stringKey());
+                }
             }
         }
     }

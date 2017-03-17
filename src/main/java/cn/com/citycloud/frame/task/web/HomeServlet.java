@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.com.citycloud.frame.task.ConsoleManager;
+import cn.com.citycloud.frame.task.DynamicTaskManager;
 import cn.com.citycloud.frame.task.core.TaskDefine;
 
 @SuppressWarnings("serial")
@@ -50,12 +51,16 @@ public class HomeServlet extends HttpServlet {
                     serverList.add(serverMap);
                 }
                 
-                List<TaskDefine> taskList = ConsoleManager.queryScheduleTask();
+                List<TaskBean> taskList = ConsoleManager.queryScheduleTask();
                 
                 templateParam.put("serverList", serverList);
                 templateParam.put("taskList", taskList);
                 ServletUtil.INSTANCE.renderHtml(request, response, templateParam, "home.ftl.html");
                 return;
+            }
+            
+            if("/list".equals(path)){
+                DynamicTaskManager.getAllJob();
             }
             
             ServletUtil.INSTANCE.returnResourceFile(path, uri, response);
@@ -70,20 +75,15 @@ public class HomeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.debug("Home Post Action!");
         try {
-
-            Map<String, Object> templateParam = new HashMap<>();
             String action = request.getParameter("action");
 
             switch (action) {
                 case "add":
                     TaskDefine taskDefine=new TaskDefine();
-                    //TODO 临时任务失效如何清理？
-                    //TODO 加载持久化任务的时候不需要同步，否则临时任务会被清理
                     ConsoleManager.getScheduleManager().getScheduleDataManager().settingTask(taskDefine);
                     response.sendRedirect("/index");
                     break;
                 case "del":
-                    //TODO 删除
                     response.sendRedirect("/index");
                     break;
                 default:

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.com.citycloud.frame.task.JobEnum;
+import cn.com.citycloud.frame.task.ZKScheduleManager;
 import cn.com.citycloud.frame.task.entity.TaskScheduleJob;
 
 /**
@@ -16,6 +18,8 @@ import cn.com.citycloud.frame.task.entity.TaskScheduleJob;
 public class TaskDefine extends TaskScheduleJob {
 
     private static final long serialVersionUID = 2514769644349516654L;
+    
+    public static final String ZK_TASK_TYPE="1";
 
     /**
      * 目标bean
@@ -27,16 +31,6 @@ public class TaskDefine extends TaskScheduleJob {
      */
     private String targetMethod;
 
-    /**
-     * 开始时间
-     */
-    private Date startTime;
-
-    /**
-     * 周期（秒）
-     */
-    private long period;
-
     private String currentServer;
 
     /**
@@ -45,13 +39,9 @@ public class TaskDefine extends TaskScheduleJob {
     private String params;
 
     /**
-     * 类型
+     * 类型 空-持久化任务，1-临时任务
      */
     private String type;
-
-    private int runTimes;
-
-    private long lastRunningTime;
 
     public TaskDefine() {
         super();
@@ -68,9 +58,38 @@ public class TaskDefine extends TaskScheduleJob {
         super.setDescription(taskScheduleJob.getDescription());
         super.setMethodName(taskScheduleJob.getMethodName());
     }
-
-    public boolean begin(Date sysTime) {
-        return null != sysTime && sysTime.after(startTime);
+    
+    public TaskDefine(String springId, String jobName, String methodName, String params) {
+        super();
+        super.setSpringId(springId);
+        super.setPrjName(ZKScheduleManager.getAppName());
+        super.setJobName(jobName);
+        super.setMethodName(methodName);
+        this.params = params;
+    }
+    
+    /**
+     * 创建临时任务
+     * 
+     * @param springId         spring bean Id
+     * @param jobName          任务名称，不能重复
+     * @param methodName       方法名
+     * @param cronExpression   cronExpression
+     * @param params           额外的参数，支持字符串
+     */
+    public TaskDefine(String springId, String jobName, String methodName, String cronExpression, String params) {
+        super();
+        super.setCronExpression(cronExpression);
+        super.setSpringId(springId);
+        super.setPrjName(ZKScheduleManager.getAppName());
+        super.setJobGroup(jobName);
+        super.setJobName(jobName);
+        super.setJobStatus(JobEnum.JobStatus.STATUS_RUNNING.getCode());
+        super.setDescription(jobName);
+        super.setMethodName(methodName);
+        super.setCreateTime(new Date());
+        this.params = params;
+        this.type = ZK_TASK_TYPE;
     }
 
     public String getTargetBean() {
@@ -95,22 +114,6 @@ public class TaskDefine extends TaskScheduleJob {
         this.targetMethod = targetMethod;
     }
 
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public long getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(long period) {
-        this.period = period;
-    }
-
     public String getCurrentServer() {
         return currentServer;
     }
@@ -120,7 +123,11 @@ public class TaskDefine extends TaskScheduleJob {
     }
 
     public String stringKey() {
-        return getTargetBean() + "#" + getTargetMethod();
+        String key=getTargetBean() + "#" + getTargetMethod();
+        if(!StringUtils.isEmpty(getParams())){
+            return key + "#" + getParams();
+        }
+        return key;
     }
 
     public String getParams() {
@@ -137,22 +144,6 @@ public class TaskDefine extends TaskScheduleJob {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public int getRunTimes() {
-        return runTimes;
-    }
-
-    public void setRunTimes(int runTimes) {
-        this.runTimes = runTimes;
-    }
-
-    public long getLastRunningTime() {
-        return lastRunningTime;
-    }
-
-    public void setLastRunningTime(long lastRunningTime) {
-        this.lastRunningTime = lastRunningTime;
     }
 
 }

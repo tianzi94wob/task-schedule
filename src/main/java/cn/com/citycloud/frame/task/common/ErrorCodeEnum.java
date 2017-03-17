@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 请严格准命名规范
  * ERROR_系统代号_错误类型 <br />
- * 1001 -2000 通用错误码
- * @version 1.0
  */
 public enum ErrorCodeEnum {
     
