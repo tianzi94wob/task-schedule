@@ -2,7 +2,6 @@ task-schedule
 ====================
 基于zookeeper+quartz的分布式任务调度组件，非常小巧，使用简单，只需要引入jar包，不需要单独部署服务端。确保所有任务在集群中均匀分布，不重复，不遗漏的执行。
 支持动态添加和删除任务。
-https://stackedit.io/editor
 
 功能概述
 ====================
@@ -29,7 +28,7 @@ https://stackedit.io/editor
 
 访问URL：项目名称/taskSchedule/index，如果servlet3.x以下，请手动配置web.xml文件
 ```
-<servlet>
+    <servlet>
 	    <servlet-name>TaskSchedule</servlet-name>
 	    <servlet-class>cn.com.citycloud.frame.task.web.HomeServlet</servlet-class>
 	</servlet>
@@ -46,20 +45,20 @@ https://stackedit.io/editor
 	-- ----------------------------
 	DROP TABLE IF EXISTS `sys_task_schedule_job`;
 	CREATE TABLE `sys_task_schedule_job` (
-	  `id` int(11) NOT NULL AUTO_INCREMENT,
-	  `job_name` varchar(255) DEFAULT NULL COMMENT '任务名称',
-	  `job_status` varchar(1) DEFAULT NULL COMMENT '任务状态',
-	  `job_group` varchar(255) NOT NULL COMMENT '任务组',
-	  `cron_expression` varchar(255) DEFAULT NULL COMMENT '表达式',
-	  `bean_class` varchar(255) DEFAULT NULL COMMENT '类路径',
-	  `spring_id` varchar(255) DEFAULT NULL COMMENT 'springId',
-	  `method_name` varchar(255) DEFAULT NULL COMMENT '方法名',
-	  `is_concurrent` varchar(1) DEFAULT NULL COMMENT '是否同步',
-	  `description` varchar(500) DEFAULT NULL COMMENT '描述',
-	  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-	  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-	  `prj_name` varchar(50) DEFAULT NULL COMMENT '工程名',
-	  PRIMARY KEY (`id`)
+	    `id` int(11) NOT NULL AUTO_INCREMENT,
+	    `job_name` varchar(255) DEFAULT NULL COMMENT '任务名称',
+	    `job_status` varchar(1) DEFAULT NULL COMMENT '任务状态 0-停止，1-运行，2-删除',
+	    `job_group` varchar(255) NOT NULL COMMENT '任务组',
+	    `cron_expression` varchar(255) DEFAULT NULL COMMENT '表达式',
+	    `bean_class` varchar(255) DEFAULT NULL COMMENT '类路径',
+	    `spring_id` varchar(255) DEFAULT NULL COMMENT 'springId',
+	    `method_name` varchar(255) DEFAULT NULL COMMENT '方法名',
+	    `is_concurrent` varchar(1) DEFAULT NULL COMMENT '是否同步',
+	    `description` varchar(500) DEFAULT NULL COMMENT '描述',
+	    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+	    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+	    `prj_name` varchar(50) DEFAULT NULL COMMENT '工程名',
+	    PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务调度配置表';
 
 	-- ----------------------------
@@ -140,7 +139,15 @@ cn.com.citycloud.frame.task.service.TaskScheduleJobService
 
 不足
 ====================
-目前从新增任务到调度有1~2秒的延迟，用户在实际业务场景中注意规避这个问题
+目前从新增任务到调度有1~2秒的延迟，用户在实际业务场景中注意规避这个问题。
+我的第一次开源尝试！反反复复修改了好几个月。这个组件应用场景目前还比较单一，可能还会存在一些问题，大家一起来优化吧！
+
+大家都在用
+====================
+- [千里目直播](http://www.qlmzhibo.com/)
+- [苏学网](http://www.jszy1d1.com/)
+- [易笔账](http://money.innovatelife.net/)
+
 
 关于
 ====================
@@ -148,4 +155,3 @@ cn.com.citycloud.frame.task.service.TaskScheduleJobService
 
 作者：赵毅（531559024@qq.com）
 
-我的第一次开源尝试！反反复复修改了好几个月。这个组件应用场景目前还比较单一，可能还会存在一些问题，大家一起来优化吧！
