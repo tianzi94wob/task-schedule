@@ -134,8 +134,27 @@ ConsoleManager.queryScheduleTask();
 
 持久化任务管理
 ====================
-cn.com.citycloud.frame.task.service.TaskScheduleJobService
-用户按需使用接口开发持久化任务管理界面
+    注入bean：TaskScheduleJobService
+
+    1  查询持久化任务列表
+    List<TaskScheduleJob> queryTaskScheduleJobList(TaskScheduleJob taskScheduleJob);
+
+    2  添加持久化任务
+    void addTask(TaskDefine taskDefine) throws Exception;
+    
+    3  通过任务ID更新，工程名、表达式、任务描述
+    void updateTask(TaskScheduleJob taskScheduleJob) throws Exception;
+    
+    4  逻辑删除任务
+    void deleteTask(Long jobId) throws Exception;
+    
+    5  查看任务实际运行的详情
+    TaskBean selectTaskDetail(Long jobId) throws Exception;
+    
+    6  更改任务状态
+    void changeStatus(Long jobId, String cmd) throws Exception;
+
+    用户按需使用接口开发持久化任务管理界面
 
 不足
 ====================
