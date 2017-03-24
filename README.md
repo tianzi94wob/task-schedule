@@ -57,7 +57,7 @@ task-schedule
 	    `description` varchar(500) DEFAULT NULL COMMENT '描述',
 	    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
 	    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-	    `prj_name` varchar(50) DEFAULT NULL COMMENT '工程名',
+	    `prj_name` varchar(50) DEFAULT NULL COMMENT '工程名，与需要调度任务的工程名保持一致，如果部署在根目录则为空',
 	    PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='任务调度配置表';
 

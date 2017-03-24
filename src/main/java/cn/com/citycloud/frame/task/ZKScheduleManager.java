@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -152,7 +153,7 @@ public class ZKScheduleManager implements ApplicationContextAware{
         List<TaskDefine> taskList = this.scheduleDataManager.getAllTask();
         if(!CollectionUtils.isEmpty(jobList)){
             if(!CollectionUtils.isEmpty(taskList)){
-                List<String> taskKeyNameRemainList=new ArrayList<String>();
+                List<String> taskKeyNameRemainList=new ArrayList<String>();//与数据库不一致的任务，需要删除的
                 for(TaskDefine taskDefine:taskList){
                     if(!TaskDefine.ZK_TASK_TYPE.equals(taskDefine.getType())){
                         taskKeyNameRemainList.add(taskDefine.stringKey());
@@ -200,14 +201,15 @@ public class ZKScheduleManager implements ApplicationContextAware{
     
     /**
      * 功能描述: <br>
-     * 〈功能详细描述〉
+     * 获取应用名称
      *
      * @return
-     * @see [相关类/方法](可选)
-     * @since [产品/模块版本](可选)
      */
     public static String getAppName(){
         String appName=applicationContext.getApplicationName();
+        if(StringUtils.isEmpty(appName)){
+            return "";
+        }
         return appName.substring(1, appName.length());
     }
     
