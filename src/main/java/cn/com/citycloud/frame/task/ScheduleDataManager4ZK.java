@@ -398,9 +398,13 @@ public class ScheduleDataManager4ZK {
                 } else {
                     for (String taskName : taskPathList) {
                         String taskPath = zkPath + "/" + taskName;
-                        // task节点下的server节点
-                        byte[] serverVal = this.getZooKeeper().getData(taskPath + "/" + SUB_NODE_SERVER, null, null);
-                        String serverId = new String(serverVal);// 每个task下只允许有一个server，直接这样取就好
+                        
+                        String serverId = "";
+                        if(this.getZooKeeper().exists(taskPath + "/" + SUB_NODE_SERVER, false) != null){
+                            // task节点下的server节点
+                            byte[] serverVal = this.getZooKeeper().getData(taskPath + "/" + SUB_NODE_SERVER, null, null);
+                            serverId = new String(serverVal);
+                        }
                         if (!taskServerList.contains(serverId)) {
                             LOG.info("task下的server失效了，重新分配server......{}", currentUuid);
                             assignServerAvg(taskServerList, taskPathList);
