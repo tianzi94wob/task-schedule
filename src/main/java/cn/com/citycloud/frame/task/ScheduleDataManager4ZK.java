@@ -591,7 +591,7 @@ public class ScheduleDataManager4ZK {
             byte[] orgData = this.getZooKeeper().getData(zkPath, null, null);
             TaskDefine orgTaskDefine = JSON.parseObject(new String(orgData, CHARSET), TaskDefine.class);
             
-            if(!orgTaskDefine.getCronExpression().equals(taskDefine.getCronExpression())){
+            if(!orgTaskDefine.getCronExpression().equals(taskDefine.getCronExpression()) && JobEnum.JobStatus.STATUS_RUNNING.getCode().equals(orgTaskDefine.getJobStatus())){
                 instruct = JobEnum.JobInstruct.ZK_UPDATE.getCode();
             }
             

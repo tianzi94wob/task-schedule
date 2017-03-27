@@ -51,7 +51,7 @@ public class ConsoleManager {
      */
     public static void delScheduleTask(TaskDefine taskDefine) {
         try {
-			ConsoleManager.scheduleManager.getScheduleDataManager().delTask(taskDefine);
+			ConsoleManager.getScheduleManager().getScheduleDataManager().delTask(taskDefine);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
@@ -83,7 +83,7 @@ public class ConsoleManager {
      * @throws Exception
      */
     public static boolean isExistsTask(TaskDefine taskDefine) throws Exception{
-        return ConsoleManager.scheduleManager.getScheduleDataManager().isExistsTask(taskDefine);
+        return ConsoleManager.getScheduleManager().getScheduleDataManager().isExistsTask(taskDefine);
     }
     
 }

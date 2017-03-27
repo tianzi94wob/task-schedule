@@ -65,7 +65,7 @@ task-schedule
 	-- Records of sys_task_schedule_job
 	-- ----------------------------
 
-	INSERT INTO `sys_task_schedule_job` VALUES ('12', 'job-test', '1', 'monitor', '0 0/10 * * * ?', 		'cn.com.citycloud.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
+	INSERT INTO `sys_task_schedule_job` VALUES ('12', 'job-test', '1', 'test', '0 0/10 * * * ?', 		'cn.com.citycloud.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
 
     新建类，用于测试JOB：
 	package cn.com.citycloud.live.mgr.job;
