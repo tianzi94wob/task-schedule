@@ -599,6 +599,7 @@ public class ScheduleDataManager4ZK {
                 instruct = JobEnum.JobInstruct.ZK_UPDATE.getCode();
             }
             
+            orgTaskDefine.setJobStatus(taskDefine.getJobStatus());
             orgTaskDefine.setParams(taskDefine.getParams());
             orgTaskDefine.setCronExpression(taskDefine.getCronExpression());
             orgTaskDefine.setDescription(taskDefine.getDescription());
