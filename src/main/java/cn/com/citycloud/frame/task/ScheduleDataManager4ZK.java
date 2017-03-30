@@ -316,6 +316,11 @@ public class ScheduleDataManager4ZK {
         Map<String, Integer> serverCountMap = new HashMap<String, Integer>();
         for (String taskName : taskPathList) {
             String taskPath = zkPath + "/" + taskName;
+            
+            if (this.getZooKeeper().exists(taskPath + "/" + SUB_NODE_SERVER, false) == null) {
+                return true;
+            }
+            
             // task节点下的server节点
             byte[] serverVal = this.getZooKeeper().getData(taskPath + "/" + SUB_NODE_SERVER, null, null);
             String serverId = new String(serverVal);
