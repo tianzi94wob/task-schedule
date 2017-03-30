@@ -290,6 +290,11 @@ public class ScheduleDataManager4ZK {
         List<ZkInfo> zkInfoList=new ArrayList<ZkInfo>();
         zkInfoList.add(new ZkInfo(zkPath + "/" + taskPathList.get(taskCount) + "/" + SUB_NODE_SERVER, serverId));
         zkInfoList.add(new ZkInfo(zkPath + "/" + taskPathList.get(taskCount) + "/" + SUB_NODE_STATUS, JobEnum.ScheduleStatus.TASK_STATUS_WAIT.getCode()));
+        
+        if (this.getZooKeeper().exists(zkPath + "/" + taskPathList.get(taskCount), false) == null) {
+            return;
+        }
+        
         ZKTools.multiSetData(this.getZooKeeper(), zkInfoList);
         LOG.debug("Assign server [" + taskServerList.get(serverCount) + "]" + " to task ["
                 + taskPathList.get(taskCount) + "]");
