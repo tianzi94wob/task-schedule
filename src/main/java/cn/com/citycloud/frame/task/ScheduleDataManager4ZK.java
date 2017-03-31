@@ -247,6 +247,8 @@ public class ScheduleDataManager4ZK {
         }
         List<String> serverList = this.getZooKeeper().getChildren(zkPath, false);
         Collections.sort(serverList, new Comparator<String>() {
+            
+            @Override
             public int compare(String u1, String u2) {
                 return u1.substring(u1.lastIndexOf("$") + 1).compareTo(u2.substring(u2.lastIndexOf("$") + 1));
             }
@@ -325,7 +327,7 @@ public class ScheduleDataManager4ZK {
             byte[] serverVal = this.getZooKeeper().getData(taskPath + "/" + SUB_NODE_SERVER, null, null);
             String serverId = new String(serverVal);
 
-            if ("0".equals(serverVal)) {
+            if ("0".equals(serverId)) {
                 // task下没有server，自然需要重新分配任务
                 LOG.info("task下没有server，重新分配server......task,{}", taskPath);
                 return true;
@@ -549,17 +551,17 @@ public class ScheduleDataManager4ZK {
             byte[] serverVal = this.getZooKeeper().getData(zkPath + "/" + SUB_NODE_SERVER, null, null);
             if (serverVal != null && uuid.equals(new String(serverVal))) {
                 byte[] data = this.getZooKeeper().getData(zkPath, null, null);
-                TaskDefine taskDefine = null;
                 try {
-                    taskDefine = JSON.parseObject(new String(data, CHARSET), TaskDefine.class);
+                    TaskDefine taskDefine = JSON.parseObject(new String(data, CHARSET), TaskDefine.class);
+                    
+                    List<ZkInfo> zkInfoList=new ArrayList<ZkInfo>();
+                    zkInfoList.add(new ZkInfo(zkPath + "/" + SUB_NODE_MSEC, String.valueOf(msc)));
+                    zkInfoList.add(new ZkInfo(zkPath + "/" + SUB_NODE_NEXT, String.valueOf(getNextRunTimes(taskDefine.getCronExpression()))));
+                    ZKTools.multiSetData(this.getZooKeeper(), zkInfoList);
                 } catch (Exception e) {
                     ZKTools.deleteTree(this.getZooKeeper(), zkPath);
                 }
                 
-                List<ZkInfo> zkInfoList=new ArrayList<ZkInfo>();
-                zkInfoList.add(new ZkInfo(zkPath + "/" + SUB_NODE_MSEC, String.valueOf(msc)));
-                zkInfoList.add(new ZkInfo(zkPath + "/" + SUB_NODE_NEXT, String.valueOf(getNextRunTimes(taskDefine.getCronExpression()))));
-                ZKTools.multiSetData(this.getZooKeeper(), zkInfoList);
             }
         } catch (Exception e) {
             LOG.error("",e);
@@ -826,6 +828,7 @@ public class ScheduleDataManager4ZK {
             taskDefine = JSON.parseObject(new String(data, CHARSET), TaskDefine.class);
         } catch (Exception e) {
             ZKTools.deleteTree(this.getZooKeeper(), taskPath);
+            return;
         }
 
         if(JobEnum.JobStatus.STATUS_RUNNING.getCode().equals(taskDefine.getJobStatus())){

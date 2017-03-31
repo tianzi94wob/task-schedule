@@ -273,7 +273,7 @@ public class ZKScheduleManager implements ApplicationContextAware{
             this.assignScheduleTask();
             // 检查本地任务
             this.checkLocalTask();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             // 清除内存中所有的已经取得的数据和任务队列,避免心跳线程失败时候导致的数据重复
             this.clearMemoInfo();
             if (e instanceof Exception) {
