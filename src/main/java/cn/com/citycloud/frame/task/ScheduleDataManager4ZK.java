@@ -519,6 +519,10 @@ public class ScheduleDataManager4ZK {
         try {
             String zkPath = this.pathTask + "/" + taskKey;
             // 判断是否分配给当前节点
+            
+            if (this.getZooKeeper().exists(zkPath, false) == null) {
+                return false;
+            }
             byte[] serverVal = this.getZooKeeper().getData(zkPath + "/" + SUB_NODE_SERVER, null, null);
             if (serverVal != null && uuid.equals(new String(serverVal))) {
                 byte[] timesVal = this.getZooKeeper().getData(zkPath + "/" + SUB_NODE_TIMES, null, null);
@@ -547,6 +551,11 @@ public class ScheduleDataManager4ZK {
     public boolean saveRunningInfo2(String taskKey,long msc,String uuid) {
         try {
             String zkPath = this.pathTask + "/" + taskKey;
+            
+            if (this.getZooKeeper().exists(zkPath, false) == null) {
+                return false;
+            }
+            
             // 判断是否分配给当前节点
             byte[] serverVal = this.getZooKeeper().getData(zkPath + "/" + SUB_NODE_SERVER, null, null);
             if (serverVal != null && uuid.equals(new String(serverVal))) {
