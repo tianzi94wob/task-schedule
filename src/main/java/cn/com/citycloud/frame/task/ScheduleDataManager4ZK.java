@@ -61,7 +61,9 @@ public class ScheduleDataManager4ZK {
     /**执行总次数*/
     private static final String SUB_NODE_TIMES = "times";
     
-    private static final long SERVER_EXPIRE_TIME = 5000 * 3;
+    //60秒超时
+    private static final long SERVER_EXPIRE_TIME = 1000 * 60;
+    
     private ZKManager zkManager;
     private String pathServer;
     private String pathTask;
@@ -162,14 +164,21 @@ public class ScheduleDataManager4ZK {
             try {
                 Stat stat = new Stat();
                 this.getZooKeeper().getData(zkPath + "/" + name, null, stat);
-                if (getSystemTime() - stat.getMtime() > SERVER_EXPIRE_TIME) {
+                long systemTime = getSystemTime();
+                long mtime = stat.getMtime();
+                if ((systemTime - mtime) > SERVER_EXPIRE_TIME) {
                     ZKTools.deleteTree(this.getZooKeeper(), zkPath + "/" + name);
-                    LOG.info("ScheduleServer[" + zkPath + "/" + name + "]过期清除");
+                    LOG.info("ScheduleServer[" + zkPath + "/" + name + "]过期清除！systemTime:"+systemTime+",mtime:"+mtime+",expireTime:"+SERVER_EXPIRE_TIME);
                 }
             } catch (Exception e) {
                 // 当有多台服务器时，存在并发清理的可能，忽略异常
             }
         }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(new Date(1493887660027L));
+        System.out.println(new Date(1493887628251L));
     }
 
     /**
@@ -455,7 +464,8 @@ public class ScheduleDataManager4ZK {
     }
 
     private long getSystemTime() {
-        return this.zkBaseTime + (System.currentTimeMillis() - this.loclaBaseTime);
+        //当前时间加上 zk和本地的时间差
+        return  System.currentTimeMillis() + (this.zkBaseTime - this.loclaBaseTime);
     }
 
     /**
