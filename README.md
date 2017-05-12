@@ -115,8 +115,24 @@ spring配置
 		    </property>
 	    </bean>
 	    
-	    注：如果觉得日志过多，可以屏蔽，以Logback为例：
-	    <logger name="cn.com.citycloud.frame.task" level="info" />
+	    注：如果觉得日志过多，可以屏蔽日志。
+	  logback： <logger name="cn.com.citycloud.frame.task" level="info" />
+	  log4j：log4j.logger.cn.com.citycloud.frame.task=info	还要把logback的隐式依赖给去掉
+	  <dependency>
+	      <groupId>cn.com.citycloud</groupId>
+	      <artifactId>frame-task</artifactId>
+	      <version>1.0.6</version>
+		  <exclusions>
+		      <exclusion>
+			      <groupId>ch.qos.logback</groupId>
+				  <artifactId>logback-classic</artifactId>
+			  </exclusion>
+			  <exclusion>
+			      <groupId>ch.qos.logback</groupId>
+				  <artifactId>logback-core</artifactId>
+		      </exclusion>
+          </exclusions>
+	  </dependency>
 
 API
 ====================
