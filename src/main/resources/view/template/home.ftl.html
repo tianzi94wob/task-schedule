@@ -131,7 +131,7 @@
 	 							<td>${task.targetMethod}</td>
  								<td>${task.params!''}</td>
 	 							<td>${task.cronExpression}</td>
-	 							<#if ((!task.params??)||task.params == "1") >
+	 							<#if ((!task.type??)||task.type != "1") >
 	 								<td>持久化任务</td>
 	 							<#else>
 	 								<td>ZK临时任务</td>
