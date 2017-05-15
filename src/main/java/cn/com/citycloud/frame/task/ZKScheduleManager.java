@@ -208,7 +208,7 @@ public class ZKScheduleManager implements ApplicationContextAware{
     public static String getAppName(){
         String appName=applicationContext.getApplicationName();
         if(StringUtils.isEmpty(appName)){
-            return "";
+            return "BLANK";
         }
         return appName.substring(1, appName.length());
     }
