@@ -81,6 +81,8 @@ task-schedule
 		    System.out.println("如果觉得快乐你就拍拍手");
 	    }
 	}
+	
+	zookeeper需3.4.8以上版本
 		
 spring配置
 ====================
