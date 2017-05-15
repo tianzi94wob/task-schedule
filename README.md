@@ -121,9 +121,9 @@ spring配置
 	  	logback： <logger name="cn.com.citycloud.frame.task" level="info" />
 	  	log4j：log4j.logger.cn.com.citycloud.frame.task=info	还要把logback的隐式依赖给去掉
 	  	<dependency>
-	      <groupId>cn.com.citycloud</groupId>
+	      <groupId>com.github.tianzi94wob</groupId>
 	      <artifactId>frame-task</artifactId>
-	      <version>1.0.6</version>
+	      <version>1.0.0.RELEASES</version>
 		  <exclusions>
 		      <exclusion>
 			      <groupId>ch.qos.logback</groupId>
