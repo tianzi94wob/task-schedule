@@ -4,7 +4,7 @@
 	<groupId>com.github.tianzi94wob</groupId>
 	<artifactId>frame-task</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.6</version>
+	<version>1.0.0.RELEASES</version>
 
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
