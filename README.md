@@ -182,7 +182,6 @@ ConsoleManager.queryScheduleTask();
 大家都在用
 ====================
 - [千里目直播](http://www.qlmzhibo.com/)
-- [苏学网](http://www.jszy1d1.com/)
 - [易笔账](http://money.innovatelife.net/)
 
 
