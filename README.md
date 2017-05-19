@@ -38,7 +38,7 @@
 	</servlet-mapping>
 ```
 
-##任务持久化脚本
+## 任务持久化脚本
 
 ```
     -- ----------------------------
@@ -91,7 +91,7 @@
 	
 zookeeper需3.4.8以上版本
 		
-##spring配置
+## spring配置
 
 ```
         <!-- 扫描路径 -->
@@ -151,7 +151,7 @@ log4j：```log4j.logger.cn.com.citycloud.frame.task=info```
 	</dependency>
 ```
 
-##API
+## API
 
 1. 动态设置任务
 ```
@@ -166,7 +166,7 @@ ConsoleManager.delScheduleTask(String targetBean, String targetMethod);
 ConsoleManager.queryScheduleTask();
 ```
 
-##持久化任务管理
+## 持久化任务管理
 
 注入bean：TaskScheduleJobService
 
@@ -202,19 +202,19 @@ ConsoleManager.queryScheduleTask();
 
 用户按需使用接口开发持久化任务管理界面
 
-##不足
+## 不足
 
 目前从新增任务到调度有1~2秒的延迟，用户在实际业务场景中注意规避这个问题。
 
 我的第一次开源尝试。反反复复修改了好几个月。这个组件应用场景目前还比较单一，可能还会存在一些问题，希望大家一起来优化这个组件，为开源社区作贡献！
 
-##大家都在用
+## 大家都在用
 
 - [千里目直播](http://www.qlmzhibo.com/)
 - [易笔账](http://money.innovatelife.net/)
 
 
-##关于
+## 关于
 
 改进于uncode-schedule，作者：冶卫军（ywj_316@qq.com,微信:yeweijun）
 
