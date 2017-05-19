@@ -1,10 +1,10 @@
-task-schedule
-====================
+#task-schedule
+
 基于zookeeper+quartz的分布式任务调度组件，非常小巧，使用简单，只需要引入jar包，不需要单独部署服务端。确保所有任务在集群中均匀分布，不重复，不遗漏的执行。
 支持动态添加和删除任务。
 
-功能概述
-====================
+##功能概述
+
 1. 基于zookeeper+quartz的分布任务调度系统，适合多任务的系统使用，合理分配资源。
 2. 确保每个任务在集群节点均匀分布，不重复不遗漏的执行。
 3. 单个任务节点故障时自动转移到其他任务节点继续执行。
@@ -13,17 +13,17 @@ task-schedule
 6. 提供简单管理页面、任务管理的接口。
 7. 任务持久化。
 
-模块架构
-====================
+##模块架构
+
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/task.png)
 
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/zujian.png)
 
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/zk.png)
 
-			
-管理页面
-=========================================
+    		
+##管理页面
+
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/admin.png)
 
 访问URL：项目名称/taskSchedule/index，如果servlet3.x以下，请手动配置web.xml文件
@@ -38,10 +38,11 @@ task-schedule
 	</servlet-mapping>
 ```
 
-任务持久化脚本
-====================
-	-- ----------------------------
-	-- Table structure for `sys_task_schedule_job`
+##任务持久化脚本
+
+```
+    -- ----------------------------
+    -- Table structure for `sys_task_schedule_job`
 	-- ----------------------------
 	DROP TABLE IF EXISTS `sys_task_schedule_job`;
 	CREATE TABLE `sys_task_schedule_job` (
@@ -65,9 +66,14 @@ task-schedule
 	-- Records of sys_task_schedule_job
 	-- ----------------------------
 
-	INSERT INTO `sys_task_schedule_job` VALUES ('12', 'job-test', '1', 'test', '0 0/10 * * * ?', 		'cn.com.citycloud.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
+	INSERT INTO `sys_task_schedule_job` VALUES ('12', 'job-test', '1', 'test', '0 0/10 * * * ?', 
+        		'cn.com.citycloud.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
+```
 
-    新建类，用于测试JOB：
+
+新建类，用于测试JOB：
+
+```
 	package cn.com.citycloud.live.mgr.job;
 	
 	/**
@@ -81,11 +87,13 @@ task-schedule
 		    System.out.println("如果觉得快乐你就拍拍手");
 	    }
 	}
+```
 	
-	zookeeper需3.4.8以上版本
+zookeeper需3.4.8以上版本
 		
-spring配置
-====================
+##spring配置
+
+```
         <!-- 扫描路径 -->
 	    <context:component-scan base-package="cn.com.citycloud.frame.task"/>
 
@@ -116,77 +124,98 @@ spring配置
 		        </map>
 		    </property>
 	    </bean>
-	    
-		注：如果觉得日志过多，可以屏蔽日志。
-	  	logback： <logger name="cn.com.citycloud.frame.task" level="info" />
-	  	log4j：log4j.logger.cn.com.citycloud.frame.task=info	还要把logback的隐式依赖给去掉
-	  	<dependency>
-	      <groupId>com.github.tianzi94wob</groupId>
-	      <artifactId>frame-task</artifactId>
-	      <version>1.0.0.RELEASES</version>
-		  <exclusions>
-		      <exclusion>
-			      <groupId>ch.qos.logback</groupId>
-				  <artifactId>logback-classic</artifactId>
-			  </exclusion>
-			  <exclusion>
-			      <groupId>ch.qos.logback</groupId>
-				  <artifactId>logback-core</artifactId>
-		      </exclusion>
-          </exclusions>
-	  	</dependency>
+```	    
+注：如果觉得日志过多，可以屏蔽日志。
+	  	
+logback： ```<logger name="cn.com.citycloud.frame.task" level="info" />```
 
-API
-====================
-1 动态设置任务
+log4j：```log4j.logger.cn.com.citycloud.frame.task=info```
 
+还要把logback的隐式依赖给去掉：
+
+```
+	<dependency>
+	    <groupId>com.github.tianzi94wob</groupId>
+	    <artifactId>frame-task</artifactId>
+	    <version>1.0.0.RELEASES</version>
+		<exclusions>
+		    <exclusion>
+			    <groupId>ch.qos.logback</groupId>
+			    <artifactId>logback-classic</artifactId>
+			</exclusion>
+			<exclusion>
+			    <groupId>ch.qos.logback</groupId>
+			    <artifactId>logback-core</artifactId>
+	        </exclusion>
+        </exclusions>
+	</dependency>
+```
+
+##API
+
+1. 动态设置任务
+```
 ConsoleManager.setScheduleTask(TaskDefine taskDefine);
-
-2 动态删除任务
-
+```
+2. 动态删除任务
+```
 ConsoleManager.delScheduleTask(String targetBean, String targetMethod);
-
-3 查询任务列表
-
+```
+3. 查询任务列表
+```
 ConsoleManager.queryScheduleTask();
+```
 
-持久化任务管理
-====================
-    注入bean：TaskScheduleJobService
+##持久化任务管理
 
-    1  查询持久化任务列表
+注入bean：TaskScheduleJobService
+
+1.  查询持久化任务列表
+```
     List<TaskScheduleJob> queryTaskScheduleJobList(TaskScheduleJob taskScheduleJob);
+```
 
-    2  添加持久化任务
+2.  添加持久化任务
+```
     void addTask(TaskDefine taskDefine) throws Exception;
+```
     
-    3  通过任务ID更新，工程名、表达式、任务描述
+3.  通过任务ID更新，工程名、表达式、任务描述
+```
     void updateTask(TaskScheduleJob taskScheduleJob) throws Exception;
+```
     
-    4  逻辑删除任务
+4.  逻辑删除任务
+```
     void deleteTask(Long jobId) throws Exception;
+```
     
-    5  查看任务实际运行的详情
+5.  查看任务实际运行的详情
+```
     TaskBean selectTaskDetail(Long jobId) throws Exception;
+```
     
-    6  更改任务状态
+6.  更改任务状态
+```
     void changeStatus(Long jobId, String cmd) throws Exception;
+```
 
-    用户按需使用接口开发持久化任务管理界面
+用户按需使用接口开发持久化任务管理界面
 
-不足
-====================
+##不足
+
 目前从新增任务到调度有1~2秒的延迟，用户在实际业务场景中注意规避这个问题。
-我的第一次开源尝试！反反复复修改了好几个月。这个组件应用场景目前还比较单一，可能还会存在一些问题，大家一起来优化吧！
 
-大家都在用
-====================
+我的第一次开源尝试。反反复复修改了好几个月。这个组件应用场景目前还比较单一，可能还会存在一些问题，希望大家一起来优化这个组件，为开源社区作贡献！
+
+##大家都在用
+
 - [千里目直播](http://www.qlmzhibo.com/)
 - [易笔账](http://money.innovatelife.net/)
 
 
-关于
-====================
+##关于
+
 改进于uncode-schedule，作者：冶卫军（ywj_316@qq.com,微信:yeweijun）
 
 作者：赵毅（531559024@qq.com）
