@@ -94,7 +94,7 @@ zookeeper需3.4.8以上版本
 ## spring配置
 
 ```
-		<!-- 扫描路径 -->
+        <!-- 扫描路径 -->
 	    <context:component-scan base-package="cn.com.citycloud.frame.task"/>
 
 	    <!-- 数据源注入 -->
@@ -146,7 +146,7 @@ log4j：```log4j.logger.cn.com.citycloud.frame.task=info```
 			<exclusion>
 			    <groupId>ch.qos.logback</groupId>
 			    <artifactId>logback-core</artifactId>
-	        </exclusion>
+			</exclusion>
 		</exclusions>
 	</dependency>
 ```
