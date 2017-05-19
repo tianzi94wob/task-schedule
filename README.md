@@ -1,9 +1,9 @@
-#task-schedule
+# task-schedule
 
 基于zookeeper+quartz的分布式任务调度组件，非常小巧，使用简单，只需要引入jar包，不需要单独部署服务端。确保所有任务在集群中均匀分布，不重复，不遗漏的执行。
 支持动态添加和删除任务。
 
-##功能概述
+## 功能概述
 
 1. 基于zookeeper+quartz的分布任务调度系统，适合多任务的系统使用，合理分配资源。
 2. 确保每个任务在集群节点均匀分布，不重复不遗漏的执行。
@@ -13,7 +13,7 @@
 6. 提供简单管理页面、任务管理的接口。
 7. 任务持久化。
 
-##模块架构
+## 模块架构
 
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/task.png)
 
@@ -22,7 +22,7 @@
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/zk.png)
 
     		
-##管理页面
+## 管理页面
 
 ![image](https://github.com/tianzi94wob/task-schedule/blob/master/src/main/resources/view/images/admin.png)
 
