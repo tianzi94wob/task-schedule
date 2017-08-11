@@ -68,6 +68,8 @@
 
 	INSERT INTO `sys_task_schedule_job` VALUES ('12', 'job-test', '1', 'test', '0 0/10 * * * ?', 
         		'cn.com.citycloud.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
+			
+    ###如果应用的上下文没有子路径，就是直接通过ip:port访问。那么prj_name填BLANK，这样一来只支持一个应用了。
 ```
 
 
@@ -150,6 +152,8 @@ log4j：```log4j.logger.cn.com.citycloud.frame.task=info```
 		</exclusions>
 	</dependency>
 ```
+
+此外，zookeeper的版本需要3.4.6以上
 
 ## API
 
