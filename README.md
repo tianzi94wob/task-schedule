@@ -206,6 +206,8 @@ ConsoleManager.queryScheduleTask();
 
 用户按需使用接口开发持久化任务管理界面
 
+前端工程地址：https://github.com/tianzi94wob/task-schedule-npm
+
 ## 不足
 
 目前从新增任务到调度有1~2秒的延迟，请在实际业务场景开发中注意规避这个问题。
