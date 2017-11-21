@@ -30,7 +30,7 @@
 ```
 	<servlet>
 	    <servlet-name>TaskSchedule</servlet-name>
-	    <servlet-class>cn.com.citycloud.frame.task.web.HomeServlet</servlet-class>
+	    <servlet-class>com.secsbrain.frame.task.web.HomeServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 	    <servlet-name>TaskSchedule</servlet-name>
@@ -67,7 +67,7 @@
 	-- ----------------------------
 
 	INSERT INTO `sys_task_schedule_job` VALUES ('12', 'job-test', '1', 'test', '0 0/10 * * * ?', 
-        		'cn.com.citycloud.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
+        		'com.secsbrain.live.mgr.job', '', 'gogogo', '1', '任务测试', '2017-01-10 17:05:06', '2017-01-12 17:07:34', 'live-mgr');
 			
     ###如果应用的上下文没有子路径，就是直接通过ip:port访问。那么prj_name填BLANK，这样一来只支持一个应用了。
 ```
@@ -76,7 +76,7 @@
 新建类，用于测试JOB：
 
 ```
-	package cn.com.citycloud.live.mgr.job;
+	package com.secsbrain.live.mgr.job;
 	
 	/**
 	 * 任务测试类
@@ -97,7 +97,7 @@ zookeeper需3.4.8以上版本
 
 ```
 		<!-- 扫描路径 -->
-	    <context:component-scan base-package="cn.com.citycloud.frame.task"/>
+	    <context:component-scan base-package="com.secsbrain.frame.task"/>
 
 	    <!-- 数据源注入 -->
 	    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
@@ -114,7 +114,7 @@ zookeeper需3.4.8以上版本
 	    </bean>	
 
 	    <!-- 分布式任务管理器-->
-	    <bean id="zkScheduleManager" class="cn.com.citycloud.frame.task.ZKScheduleManager" init-method="init">
+	    <bean id="zkScheduleManager" class="com.secsbrain.frame.task.ZKScheduleManager" init-method="init">
 		    <property name="zkConfig">
 		        <map>
 		            <entry key="zkConnectString" value="127.0.0.1:2181" /><!-- zk地址 -->
@@ -129,9 +129,9 @@ zookeeper需3.4.8以上版本
 ```	    
 注：如果觉得日志过多，可以屏蔽日志。
 	  	
-logback： ```<logger name="cn.com.citycloud.frame.task" level="info" />```
+logback： ```<logger name="com.secsbrain.frame.task" level="info" />```
 
-log4j：```log4j.logger.cn.com.citycloud.frame.task=info```
+log4j：```log4j.logger.com.secsbrain.frame.task=info```
 
 还要把logback的隐式依赖给去掉：
 
