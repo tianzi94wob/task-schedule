@@ -153,6 +153,8 @@ log4j：```log4j.logger.com.secsbrain.frame.task=info```
 	</dependency>
 ```
 
+1.0.0.RELEASES版本，包需要换成cn.com.citycloud
+
 此外，zookeeper的版本需要3.4.6以上
 
 ## API
