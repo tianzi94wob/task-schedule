@@ -93,7 +93,7 @@
 	
 zookeeper需3.4.8以上版本
 		
-## spring配置
+## 传统spring配置
 
 ```
 		<!-- 扫描路径 -->
@@ -127,6 +127,52 @@ zookeeper需3.4.8以上版本
 		    </property>
 	    </bean>
 ```	    
+
+## springboot配置
+
+```
+@Configuration
+public class TaskScheduleConfig {
+    
+    @Value("${zookeeper.address}")  
+    private String zookeeperUrl; 
+    
+    @Bean(name = "zkScheduleManager",initMethod="init")
+    public ZKScheduleManager zkScheduleManager(){
+        ZKScheduleManager zkScheduleManager=new ZKScheduleManager();
+        Map<String, String> zkConfig=new HashMap<>();
+        zkConfig.put("zkConnectString", zookeeperUrl);
+        zkConfig.put("rootPath", "/task_brain/schedule");
+        zkConfig.put("zkSessionTimeout", "60000");
+        zkConfig.put("userName", "test");
+        zkConfig.put("password", "test");
+
+        zkScheduleManager.setZkConfig(zkConfig);
+        return zkScheduleManager;
+    }
+    
+    @Bean(name = "schedulerFactoryBean")
+    public SchedulerFactoryBean schedulerFactoryBean(){
+        SchedulerFactoryBean schedulerFactoryBean=new SchedulerFactoryBean();
+        Properties quartzProperties=new Properties();
+        quartzProperties.put("org.quartz.scheduler.skipUpdateCheck", true);
+        schedulerFactoryBean.setQuartzProperties(quartzProperties);
+        return schedulerFactoryBean;
+    }
+
+    /** 
+     * 代码注册servlet(不需要@ServletComponentScan注解) 
+     * @return 
+     */  
+    @Bean  
+    public ServletRegistrationBean servletRegistrationBean() {  
+        return new ServletRegistrationBean(new HomeServlet(), "/taskSchedule/*");
+    } 
+
+}
+
+```	    
+
 注：如果觉得日志过多，可以屏蔽日志。
 	  	
 logback： ```<logger name="com.secsbrain.frame.task" level="info" />```
